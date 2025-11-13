@@ -27,3 +27,6 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: docker push ivancm0/beersp:latest
+
+      - name: Trigger Render deploy
+        run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}

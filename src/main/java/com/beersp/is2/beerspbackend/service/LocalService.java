@@ -3,6 +3,7 @@ package com.beersp.is2.beerspbackend.service;
 import com.beersp.is2.beerspbackend.model.Local;
 import com.beersp.is2.beerspbackend.repository.LocalRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class LocalService {
+    @Autowired
     private final LocalRepository repository;
 
     public List<Local> obtenerLocales() {
@@ -20,19 +22,18 @@ public class LocalService {
         return repository.findById(id).orElse(null);
     }
 
+    public boolean existeLocal(int id) { return repository.existsById(id); }
+
     public Local crearLocal(Local local) {
         return repository.save(local);
     }
 
-    public Local actualizarLocal(int id, Local local) {
+    public void actualizarLocal(int id, Local local) {
         Local localActual =  repository.findById(id).orElse(null);
         if (localActual != null) {
-            localActual.setNombre(local.getNombre());
-            localActual.setDireccion(local.getDireccion());
-            return repository.save(localActual);
-        }
-        else {
-            return null;
+            if (local.getNombre() != null) localActual.setNombre(local.getNombre());
+            if (local.getDireccion() != null) localActual.setDireccion(local.getDireccion());
+            repository.save(localActual);
         }
     }
 

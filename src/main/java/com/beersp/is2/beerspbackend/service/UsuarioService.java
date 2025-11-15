@@ -44,16 +44,9 @@ public class UsuarioService {
             if (usuario.getEmail() != null) usuarioActual.setEmail(usuario.getEmail());
             if (usuario.getNombre() != null) usuarioActual.setNombre(usuario.getNombre());
             if (usuario.getApellidos() != null) usuarioActual.setApellidos(usuario.getApellidos());
+            if (usuario.getFoto() != null) usuarioActual.setFoto(usuario.getFoto());
             if (usuario.getProcedencia() != null) usuarioActual.setProcedencia(usuario.getProcedencia());
             if (usuario.getIntroduccion() != null) usuarioActual.setIntroduccion(usuario.getIntroduccion());
-            repository.save(usuarioActual);
-        }
-    }
-
-    public void actualizarFotoUsuario(Integer id, MultipartFile foto) {
-        Usuario usuarioActual = repository.findById(id).orElse(null);
-        if (usuarioActual != null) {
-            usuarioActual.añadirFoto(foto);
             repository.save(usuarioActual);
         }
     }

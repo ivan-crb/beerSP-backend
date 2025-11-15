@@ -63,17 +63,6 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/foto")
-    public ResponseEntity<Void> actualizarFotoUsuario(@PathVariable Integer id,
-                                                  @RequestParam(name = "foto") MultipartFile foto) {
-        if (!usuarioService.existeUsuario(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        usuarioService.actualizarFotoUsuario(id, foto);
-        return ResponseEntity.noContent().build();
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
         if (!usuarioService.existeUsuario(id)) {

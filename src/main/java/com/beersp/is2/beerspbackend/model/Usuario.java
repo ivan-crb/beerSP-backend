@@ -33,17 +33,7 @@ public class Usuario extends RepresentationModel<Usuario> {
     private String nombre;
     private String apellidos;
     @Lob
-    private byte[] foto;
+    private String foto;
     private String procedencia;
     private String introduccion;
-
-    public void añadirFoto(MultipartFile foto) {
-        if (foto != null) {
-            try {
-                this.setFoto(Base64.getEncoder().encode(foto.getBytes()));
-            } catch (IOException e) {
-                this.setFoto(null);
-            }
-        }
-    }
 }

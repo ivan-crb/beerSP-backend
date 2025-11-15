@@ -11,6 +11,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 
 @Entity
@@ -32,19 +33,14 @@ public class Usuario extends RepresentationModel<Usuario> {
     private String nombre;
     private String apellidos;
     @Lob
-    private Byte[] foto;
+    private byte[] foto;
     private String procedencia;
     private String introduccion;
 
     public void añadirFoto(MultipartFile foto) {
         if (foto != null) {
             try {
-                Byte[] byteObjects = new Byte[foto.getBytes().length];
-                int i = 0;
-                for (Byte b : foto.getBytes()) {
-                    byteObjects[i++] = b;
-                }
-                this.setFoto(byteObjects);
+                this.setFoto(Base64.getEncoder().encode(foto.getBytes()));
             } catch (IOException e) {
                 this.setFoto(null);
             }

@@ -22,6 +22,14 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Usuario> obtenerUsuario(@PathVariable String username) {
+        if (!usuarioService.existeUsuario(username)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(usuarioService.obtenerUsuario(username));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerUsuario(@PathVariable Integer id) {
         if (!usuarioService.existeUsuario(id)) {

@@ -5,6 +5,7 @@ import com.beersp.is2.beerspbackend.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,10 +16,15 @@ public class UsuarioService {
     @Autowired
     private final UsuarioRepository repository;
 
+    @Transactional
     public List<Usuario> obtenerUsuarios() {
         return repository.findAll();
     }
 
+    @Transactional
+    public Usuario obtenerUsuario(String nombreUsuario) { return repository.findByNombreUsuario(nombreUsuario).orElse(null);}
+
+    @Transactional
     public Usuario obtenerUsuario(Integer id) { return repository.findById(id).orElse(null);}
 
     public boolean existeUsuario(String nombreUsuario) { return repository.existsByNombreUsuario(nombreUsuario); }

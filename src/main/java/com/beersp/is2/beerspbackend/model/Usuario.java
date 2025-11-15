@@ -26,7 +26,7 @@ public class Usuario extends RepresentationModel<Usuario> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nombreUsuario;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fechaNacimiento;
     private String contrasena;
     private String email;

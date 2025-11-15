@@ -24,7 +24,7 @@ public class Cerveza extends RepresentationModel<Cerveza> {
     private Integer id;
     private String nombre;
     @Lob
-    private Byte[] foto;
+    private String foto;
     private String descripcion;
     private String estilo;
     private String procedencia;
@@ -33,19 +33,4 @@ public class Cerveza extends RepresentationModel<Cerveza> {
     private Integer porcentajeAlcohol;
     private Integer amargor;
     private String color;
-
-    public void añadirFoto(MultipartFile foto) {
-        if (foto != null) {
-            try {
-                Byte[] byteObjects = new Byte[foto.getBytes().length];
-                int i = 0;
-                for (Byte b : foto.getBytes()) {
-                    byteObjects[i++] = b;
-                }
-                this.setFoto(byteObjects);
-            } catch (IOException e) {
-                this.setFoto(null);
-            }
-        }
-    }
 }

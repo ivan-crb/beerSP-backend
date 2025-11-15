@@ -20,7 +20,7 @@ public class Local extends RepresentationModel<Local> {
     private Integer id;
     private String nombre;
     private String direccion;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fechaAlta;
 
 

@@ -46,17 +46,6 @@ public class CervezaController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/foto")
-    public ResponseEntity<Void> actualizarFotoCerveza(@PathVariable int id, 
-                                                  @RequestParam(name = "foto") MultipartFile foto) {
-        if (!cervezaService.existeCerveza(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        cervezaService.actualizarFotoCerveza(id, foto);
-        return ResponseEntity.noContent().build();
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCerveza(@PathVariable int id) {
         if (!cervezaService.existeCerveza(id)) {

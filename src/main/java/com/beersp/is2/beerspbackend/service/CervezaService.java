@@ -33,6 +33,7 @@ public class CervezaService {
         Cerveza cervezaActual = repository.findById(id).orElse(null);
         if (cervezaActual != null) {
             if (cerveza.getNombre() != null) cervezaActual.setNombre(cerveza.getNombre());
+            if (cerveza.getFoto() != null) cervezaActual.setFoto(cerveza.getFoto());
             if (cerveza.getDescripcion() != null) cervezaActual.setDescripcion(cerveza.getDescripcion());
             if (cerveza.getEstilo() != null) cervezaActual.setEstilo(cerveza.getEstilo());
             if (cerveza.getProcedencia() != null) cervezaActual.setProcedencia(cerveza.getProcedencia());
@@ -41,14 +42,6 @@ public class CervezaService {
             if (cerveza.getPorcentajeAlcohol() != null) cervezaActual.setPorcentajeAlcohol(cerveza.getPorcentajeAlcohol());
             if (cerveza.getAmargor() != null) cervezaActual.setAmargor(cerveza.getAmargor());
             if (cerveza.getColor() != null) cervezaActual.setColor(cerveza.getColor());
-            repository.save(cervezaActual);
-        }
-    }
-
-    public void actualizarFotoCerveza(int id, MultipartFile foto) {
-        Cerveza cervezaActual = repository.findById(id).orElse(null);
-        if (cervezaActual != null) {
-            cervezaActual.añadirFoto(foto);
             repository.save(cervezaActual);
         }
     }

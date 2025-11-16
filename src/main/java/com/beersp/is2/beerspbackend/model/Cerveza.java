@@ -29,7 +29,7 @@ public class Cerveza extends RepresentationModel<Cerveza> {
     private String procedencia;
     private String tamaño;
     private String formato;
-    private Integer porcentajeAlcohol;
+    private Double porcentajeAlcohol;
     private Integer amargor;
     private String color;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

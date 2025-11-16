@@ -244,8 +244,8 @@ class CervezaControllerTest {
         @DisplayName("Debe devolver lista de cervezas")
         void obtenerCervezas_ok() throws Exception {
             List<Cerveza> cervezas = Arrays.asList(
-                    new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 1, 1, "color1", Date.valueOf("2025-11-16")),
-                    new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2, 2, "color2", Date.valueOf("2025-11-16"))
+                    new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16")),
+                    new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"))
             );
 
             when(cervezaService.obtenerCervezas()).thenReturn(cervezas);
@@ -264,7 +264,7 @@ class CervezaControllerTest {
         @Test
         @DisplayName("Debe devolver una cerveza existente")
         void obtenerCerveza_existente() throws Exception {
-            Cerveza cerveza = new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 1, 1, "color1", Date.valueOf("2025-11-16"));
+            Cerveza cerveza = new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16"));
 
             when(cervezaService.existeCerveza(1)).thenReturn(true);
             when(cervezaService.obtenerCerveza(1)).thenReturn(cerveza);
@@ -292,8 +292,8 @@ class CervezaControllerTest {
         @Test
         @DisplayName("Debe crear cerveza y retornar 201")
         void crearCerveza() throws Exception {
-            Cerveza nueva = new Cerveza(3, "Cerveza3","foto3", "descripción3","estilo3","procedencia3","tamaño3","formato3", 3, 3, "color3",Date.valueOf("2025-11-16"));
-            Cerveza creada = new Cerveza(10, "Cerveza10","foto10", "descripción10","estilo10","procedencia10","tamaño10","formato10", 10, 10, "color10", Date.valueOf("2025-11-16"));
+            Cerveza nueva = new Cerveza(3, "Cerveza3","foto3", "descripción3","estilo3","procedencia3","tamaño3","formato3", 3.0, 3, "color3",Date.valueOf("2025-11-16"));
+            Cerveza creada = new Cerveza(10, "Cerveza10","foto10", "descripción10","estilo10","procedencia10","tamaño10","formato10", 10.0, 10, "color10", Date.valueOf("2025-11-16"));
 
             when(cervezaService.crearCerveza(any(Cerveza.class))).thenReturn(creada);
 
@@ -313,7 +313,7 @@ class CervezaControllerTest {
         @Test
         @DisplayName("Debe actualizar y retornar 204")
         void actualizar_ok() throws Exception {
-            Cerveza mod = new Cerveza(1, "Cerveza1","foto1", "amarga en exceso","estilo1","procedencia1","tamaño1","formato1", 1, 1, "color1", Date.valueOf("2025-11-16"));
+            Cerveza mod = new Cerveza(1, "Cerveza1","foto1", "amarga en exceso","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16"));
 
             when(cervezaService.existeCerveza(1)).thenReturn(true);
 

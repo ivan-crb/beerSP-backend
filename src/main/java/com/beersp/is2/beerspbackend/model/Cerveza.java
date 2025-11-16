@@ -1,5 +1,6 @@
 package com.beersp.is2.beerspbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Entity
 @Table(name = "cervezas")
@@ -33,4 +35,6 @@ public class Cerveza extends RepresentationModel<Cerveza> {
     private Integer porcentajeAlcohol;
     private Integer amargor;
     private String color;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date fechaAlta;
 }

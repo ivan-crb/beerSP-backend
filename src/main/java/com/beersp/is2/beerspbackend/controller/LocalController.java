@@ -57,5 +57,4 @@ public class LocalController {
         return ResponseEntity.noContent().build();
     }
 
-
 }

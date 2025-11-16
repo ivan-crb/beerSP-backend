@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -54,6 +53,4 @@ public class UsuarioService {
     public void eliminarUsuario(Integer id) {
         repository.deleteById(id);
     }
-
-
 }

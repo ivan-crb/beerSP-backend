@@ -22,8 +22,4 @@ public class Local extends RepresentationModel<Local> {
     private String direccion;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fechaAlta;
-
-
-
-
 }

@@ -40,6 +40,4 @@ public class LocalService {
     public void eliminarLocal(int id) {
         repository.deleteById(id);
     }
-
-
 }

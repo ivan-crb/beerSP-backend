@@ -5,7 +5,6 @@ import com.beersp.is2.beerspbackend.repository.CervezaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -49,6 +48,4 @@ public class CervezaService {
     public void eliminarCerveza(int id) {
         repository.deleteById(id);
     }
-
-
 }

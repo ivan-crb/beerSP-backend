@@ -104,6 +104,14 @@
                         </goals>
                     </execution>
                 </executions>
+				<configuration>
+                    <excludes>
+                        <exclude>com/beersp/is2/beerspbackend/model/*</exclude>
+                        <exclude>com/beersp/is2/beerspbackend/repository/*</exclude>
+                        <exclude>com/beersp/is2/beerspbackend/service/*</exclude>
+                        <exclude>com/beersp/is2/beerspbackend/WebConfig.class</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 		</plugins>
 	</build>

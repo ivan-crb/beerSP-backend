@@ -104,7 +104,7 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
+				<configuration>
                     <excludes>
                         <exclude>com/beersp/is2/beerspbackend/model/*</exclude>
                         <exclude>com/beersp/is2/beerspbackend/repository/*</exclude>

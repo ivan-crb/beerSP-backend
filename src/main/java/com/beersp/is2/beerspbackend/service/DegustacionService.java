@@ -1,6 +1,8 @@
 package com.beersp.is2.beerspbackend.service;
 
+import com.beersp.is2.beerspbackend.model.Cerveza;
 import com.beersp.is2.beerspbackend.model.Degustacion;
+import com.beersp.is2.beerspbackend.repository.CervezaRepository;
 import com.beersp.is2.beerspbackend.repository.DegustacionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import java.util.List;
 public class DegustacionService {
     @Autowired
     private final DegustacionRepository repository;
+    private final CervezaRepository cervezaRepository;
 
     public List<Degustacion> obtenerDegustaciones() {
         return repository.findAll();
@@ -25,7 +28,6 @@ public class DegustacionService {
 
     public boolean existeDegustacion(int id) { return repository.existsById(id); }
 
-    @Transactional
     public Degustacion crearDegustacion(Degustacion degustacion) {
         return repository.save(degustacion);
     }
@@ -46,11 +48,17 @@ public class DegustacionService {
         repository.deleteById(id);
     }
 
-    // TODO
+    @Transactional
     public void actualizarPromedioCerveza(int id) {
-        List<Degustacion> a = repository.findByCervezaId(id);
+        List<Degustacion> degustaciones = repository.findByCervezaId(id);
+        Cerveza cerveza = cervezaRepository.findById(id).orElse(null);
 
+        Double sum = 0.0;
+        for (Degustacion degustacion : degustaciones) {
+            sum += degustacion.getCalificacion();
+        }
 
-
+        cerveza.setPromedio(sum / degustaciones.size());
+        cervezaRepository.save(cerveza);
     }
 }

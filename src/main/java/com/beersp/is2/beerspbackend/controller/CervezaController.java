@@ -18,8 +18,13 @@ public class CervezaController {
     private final CervezaService cervezaService;
 
     @GetMapping("")
-    public ResponseEntity<List<Cerveza>> obtenerCervezaes() {
+    public ResponseEntity<List<Cerveza>> obtenerCervezas() {
         return ResponseEntity.ok(cervezaService.obtenerCervezas());
+    }
+
+    @GetMapping("/buscar/{nombreCerveza}")
+    public ResponseEntity<List<Cerveza>> buscarCervezas(@PathVariable String nombreCerveza) {
+        return ResponseEntity.ok(cervezaService.buscarCervezas(nombreCerveza));
     }
 
     @GetMapping("/{id}")

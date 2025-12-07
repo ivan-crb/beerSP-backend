@@ -34,4 +34,5 @@ public class Cerveza extends RepresentationModel<Cerveza> {
     private String color;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fechaAlta;
+    private Integer promedio;
 }

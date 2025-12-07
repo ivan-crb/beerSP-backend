@@ -5,6 +5,7 @@ import com.beersp.is2.beerspbackend.repository.CervezaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,11 @@ public class CervezaService {
 
     public List<Cerveza> obtenerCervezas() {
         return repository.findAll();
+    }
+
+    @Transactional
+    public List<Cerveza> buscarCervezas(String nombreCerveza) {
+        return repository.findByNombreContaining(nombreCerveza);
     }
 
     public Cerveza obtenerCerveza(int id) {

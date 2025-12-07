@@ -56,6 +56,8 @@ public class DegustacionController {
 
         Degustacion degustacionCreada = degustacionService.crearDegustacion(degustacion);
 
+        degustacionService.actualizarPromedioCerveza(degustacionCreada.getCerveza().getId());
+
         return ResponseEntity.created(linkTo(DegustacionController.class).slash(degustacionCreada.getId()).toUri()).build();
     }
 

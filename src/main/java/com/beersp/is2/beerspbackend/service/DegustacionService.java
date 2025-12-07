@@ -43,4 +43,12 @@ public class DegustacionService {
     public void eliminarDegustacion(int id) {
         repository.deleteById(id);
     }
+
+    // TODO
+    public void actualizarPromedioCerveza(int id) {
+        List<Degustacion> a = repository.findByCervezaId(id);
+
+
+
+    }
 }

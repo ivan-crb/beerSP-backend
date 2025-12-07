@@ -5,6 +5,7 @@ import com.beersp.is2.beerspbackend.repository.DegustacionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class DegustacionService {
 
     public boolean existeDegustacion(int id) { return repository.existsById(id); }
 
+    @Transactional
     public Degustacion crearDegustacion(Degustacion degustacion) {
         return repository.save(degustacion);
     }

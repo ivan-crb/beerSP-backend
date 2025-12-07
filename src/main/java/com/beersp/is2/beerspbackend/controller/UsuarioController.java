@@ -19,11 +19,13 @@ public class UsuarioController {
 
     @GetMapping("")
     public ResponseEntity<List<Usuario>> obtenerUsuarios() {
+        System.out.println("obtenerUsuarios");
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
     @GetMapping("/username/{username}")
     public ResponseEntity<Usuario> obtenerUsuario(@PathVariable String username) {
+        System.out.println("obtenerUsuario username");
         if (!usuarioService.existeUsuario(username)) {
             return ResponseEntity.notFound().build();
         }
@@ -32,6 +34,7 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerUsuario(@PathVariable Integer id) {
+        System.out.println("obtenerUsuario id");
         if (!usuarioService.existeUsuario(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -40,6 +43,7 @@ public class UsuarioController {
 
     @PostMapping("")
     public ResponseEntity<Void> crearUsuario(@RequestBody Usuario nuevoUsuario) {
+        System.out.println("crearUsuario id");
         if (usuarioService.existeUsuario(nuevoUsuario.getNombreUsuario())) {
             return ResponseEntity.badRequest().build();
         }

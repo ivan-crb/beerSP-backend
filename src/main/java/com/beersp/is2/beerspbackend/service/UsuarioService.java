@@ -9,6 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+
+import java.util.Properties;
+
 @Service
 @AllArgsConstructor
 public class UsuarioService {
@@ -31,6 +37,38 @@ public class UsuarioService {
     public boolean existeUsuario(Integer id) { return repository.existsById(id); }
 
     public Usuario crearUsuario(Usuario usuario) {
+        String to = usuario.getEmail();
+        String from = "no-reply@beersp.es";
+
+        final String username = "api";
+        final String password = "99b5b7d1ccf431f22d66ac9a508477a9";
+
+        String host = "live.smtp.mailtrap.io";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props,
+                new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject("Cuenta verificada");
+            message.setText("Tu cuenta de email se ha verificado correctamente. ¡Bienvenido a BeerSP!");
+            Transport.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
         return repository.save(usuario);
     }
 

@@ -54,11 +54,15 @@ public class DegustacionService {
         Cerveza cerveza = cervezaRepository.findById(id).orElse(null);
 
         Double sum = 0.0;
+        Integer count = 0;
         for (Degustacion degustacion : degustaciones) {
-            sum += degustacion.getCalificacion();
+            if (degustacion.getCalificacion() != null) {
+                sum += degustacion.getCalificacion();
+                count++;
+            }
         }
 
-        cerveza.setPromedio(sum / degustaciones.size());
+        cerveza.setPromedio(sum / count);
         cervezaRepository.save(cerveza);
     }
 }

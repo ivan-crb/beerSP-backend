@@ -1,6 +1,7 @@
 package com.beersp.is2.beerspbackend.service;
 
 import com.beersp.is2.beerspbackend.model.Usuario;
+import com.beersp.is2.beerspbackend.repository.DegustacionRepository;
 import com.beersp.is2.beerspbackend.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

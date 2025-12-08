@@ -43,7 +43,7 @@ public class DegustacionController {
         Cerveza cerveza = cervezaService.obtenerCerveza(nuevaDegustacion.getCerveza());
         Local local = localService.obtenerLocal(nuevaDegustacion.getLocal());
 
-        if (usuario == null || cerveza == null || local == null) {
+        if (usuario == null || cerveza == null) {
             return ResponseEntity.notFound().build();
         }
 
@@ -53,6 +53,7 @@ public class DegustacionController {
         degustacion.setLocal(local);
         degustacion.setCalificacion(nuevaDegustacion.getCalificacion());
         degustacion.setPais(nuevaDegustacion.getPais());
+        degustacion.setFechaAlta(nuevaDegustacion.getFechaAlta());
 
         Degustacion degustacionCreada = degustacionService.crearDegustacion(degustacion);
 

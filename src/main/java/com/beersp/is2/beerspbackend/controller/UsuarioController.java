@@ -1,5 +1,6 @@
 package com.beersp.is2.beerspbackend.controller;
 
+import com.beersp.is2.beerspbackend.model.Local;
 import com.beersp.is2.beerspbackend.model.Usuario;
 import com.beersp.is2.beerspbackend.service.UsuarioService;
 import lombok.AllArgsConstructor;

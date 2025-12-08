@@ -1,6 +1,8 @@
 package com.beersp.is2.beerspbackend.service;
 
+import com.beersp.is2.beerspbackend.model.Degustacion;
 import com.beersp.is2.beerspbackend.model.Local;
+import com.beersp.is2.beerspbackend.repository.DegustacionRepository;
 import com.beersp.is2.beerspbackend.repository.LocalRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import java.util.List;
 public class LocalService {
     @Autowired
     private final LocalRepository repository;
+    private final DegustacionRepository degustacionRepository;
 
     public List<Local> obtenerLocales() {
         return repository.findAll();

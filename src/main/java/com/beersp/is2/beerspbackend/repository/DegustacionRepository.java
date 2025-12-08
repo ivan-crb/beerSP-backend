@@ -11,4 +11,5 @@ public interface DegustacionRepository extends JpaRepository<Degustacion, Intege
 
     public List<Degustacion> findByCervezaId(Integer id);
 
+    public List<Degustacion> getDegustacionByUsuarioIdOrderByFechaAlta(Integer id);
 }

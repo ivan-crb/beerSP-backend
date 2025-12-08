@@ -21,6 +21,11 @@ public class LocalController {
         return ResponseEntity.ok(localService.obtenerLocales());
     }
 
+    @GetMapping("/usuarios/{usuarioId}/recientes")
+    public ResponseEntity<List<Local>> obtenerLocalesRecientes(@PathVariable int usuarioId) {
+        return ResponseEntity.ok(localService.obtenerLocalesRecientes(usuarioId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Local> obtenerLocal(@PathVariable int id) {
         if (!localService.existeLocal(id)) {

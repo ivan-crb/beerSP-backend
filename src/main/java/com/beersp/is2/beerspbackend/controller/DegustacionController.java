@@ -28,6 +28,11 @@ public class DegustacionController {
         return ResponseEntity.ok(degustacionService.obtenerDegustaciones());
     }
 
+    @GetMapping("/usuarios/{usuarioId}/ultimos")
+    public ResponseEntity<List<Degustacion>> obtenerDegustacionesUltimos(@PathVariable int usuarioId) {
+        return ResponseEntity.ok(degustacionService.obtenerDegustacionesUltimos(usuarioId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Degustacion> obtenerDegustacion(@PathVariable int id) {
         if (!degustacionService.existeDegustacion(id)) {

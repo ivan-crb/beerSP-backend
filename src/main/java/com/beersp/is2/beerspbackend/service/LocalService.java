@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 @Service
 @AllArgsConstructor
@@ -28,12 +31,30 @@ public class LocalService {
         List<Degustacion> degustacionesUsuario = degustacionRepository.getDegustacionByUsuarioIdOrderByFechaAlta(usuarioId);
         List<Local> locales = new ArrayList<>();
         int count = 0;
-        for (int i = 0; i < degustacionesUsuario.size() && count < 55; i++) {
+        for (int i = 0; i < degustacionesUsuario.size() && count < 5; i++) {
             int index = degustacionesUsuario.size() -  i - 1;
-            if (degustacionesUsuario.get(index).getFechaAlta() != null && !locales.contains(degustacionesUsuario.get(index).getLocal())) {
-                System.out.println(degustacionesUsuario.get(index).getFechaAlta());
+            if (degustacionesUsuario.get(index).getFechaAlta() != null && degustacionesUsuario.get(index).getLocal() != null &&
+                    !locales.contains(degustacionesUsuario.get(index).getLocal())) {
                 locales.add(degustacionesUsuario.get(index).getLocal());
                 count++;
+            }
+        }
+        return locales;
+    }
+
+    @Transactional
+    public List<Local> obtenerLocalesUltimos(int usuarioId) {
+        List<Degustacion> degustacionesUsuario = degustacionRepository.getDegustacionByUsuarioIdOrderByFechaAlta(usuarioId);
+        List<Local> locales = new ArrayList<>();
+        Date actual = new Date();
+
+        for (int i = 0; i < degustacionesUsuario.size(); i++) {
+            int index = degustacionesUsuario.size() -  i - 1;
+            Local local =  degustacionesUsuario.get(index).getLocal();
+
+            if (degustacionesUsuario.get(index).getFechaAlta() != null && local != null && !locales.contains(local) &&
+                    ( (actual.getTime() - degustacionesUsuario.get(index).getFechaAlta().getTime()) / (1000*60*60*24) <= 7) ) {
+                locales.add(local);
             }
         }
         return locales;

@@ -2,6 +2,7 @@ package com.beersp.is2.beerspbackend.service;
 
 import com.beersp.is2.beerspbackend.model.Cerveza;
 import com.beersp.is2.beerspbackend.model.Degustacion;
+import com.beersp.is2.beerspbackend.model.Local;
 import com.beersp.is2.beerspbackend.repository.CervezaRepository;
 import com.beersp.is2.beerspbackend.repository.DegustacionRepository;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,6 +23,24 @@ public class DegustacionService {
 
     public List<Degustacion> obtenerDegustaciones() {
         return repository.findAll();
+    }
+
+    @Transactional
+    public List<Degustacion> obtenerDegustacionesUltimos(int usuarioId) {
+        List<Degustacion> degustacionesUsuario = repository.getDegustacionByUsuarioIdOrderByFechaAlta(usuarioId);
+        List<Degustacion> degustaciones = new ArrayList<>();
+        Date actual = new Date();
+
+        for (int i = 0; i < degustacionesUsuario.size(); i++) {
+            int index = degustacionesUsuario.size() -  i - 1;
+            Degustacion degustacion =  degustacionesUsuario.get(index);
+
+            if (degustacionesUsuario.get(index).getFechaAlta() != null &&
+                    ( (actual.getTime() - degustacionesUsuario.get(index).getFechaAlta().getTime()) / (1000*60*60*24) <= 7) ) {
+                degustaciones.add(degustacion);
+            }
+        }
+        return degustaciones;
     }
 
     public Degustacion obtenerDegustacion(int id) {

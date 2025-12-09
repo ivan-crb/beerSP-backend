@@ -5,7 +5,6 @@ import com.beersp.is2.beerspbackend.service.CervezaService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,6 +24,11 @@ public class CervezaController {
     @GetMapping("/buscar/{nombreCerveza}")
     public ResponseEntity<List<Cerveza>> buscarCervezas(@PathVariable String nombreCerveza) {
         return ResponseEntity.ok(cervezaService.buscarCervezas(nombreCerveza));
+    }
+
+    @GetMapping("/usuarios/{usuarioId}")
+    public ResponseEntity<List<Cerveza>> obtenerCervezasUsuario(@PathVariable int usuarioId) {
+        return ResponseEntity.ok(cervezaService.obtenerCervezasUsuario(usuarioId));
     }
 
     @GetMapping("/{id}")

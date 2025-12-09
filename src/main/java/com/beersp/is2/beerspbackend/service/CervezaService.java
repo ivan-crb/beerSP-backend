@@ -1,12 +1,15 @@
 package com.beersp.is2.beerspbackend.service;
 
 import com.beersp.is2.beerspbackend.model.Cerveza;
+import com.beersp.is2.beerspbackend.model.Degustacion;
 import com.beersp.is2.beerspbackend.repository.CervezaRepository;
+import com.beersp.is2.beerspbackend.repository.DegustacionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,6 +17,7 @@ import java.util.List;
 public class CervezaService {
     @Autowired
     private final CervezaRepository repository;
+    private final DegustacionRepository degustacionRepository;
 
     public List<Cerveza> obtenerCervezas() {
         return repository.findAll();
@@ -22,6 +26,18 @@ public class CervezaService {
     @Transactional
     public List<Cerveza> buscarCervezas(String nombreCerveza) {
         return repository.findByNombreContaining(nombreCerveza);
+    }
+
+    @Transactional
+    public List<Cerveza> obtenerCervezasUsuario(int usuarioId) {
+        List<Degustacion> degustacionesUsuario = degustacionRepository.getDegustacionByUsuarioIdOrderByFechaAlta(usuarioId);
+        List<Cerveza> cervezas = new ArrayList<>();
+        for (Degustacion degustacion : degustacionesUsuario) {
+            if (!cervezas.contains(degustacion.getCerveza())) {
+                cervezas.add(degustacion.getCerveza());
+            }
+        }
+        return cervezas;
     }
 
     public Cerveza obtenerCerveza(int id) {

@@ -36,7 +36,7 @@ public class CervezaService {
                 cervezas.add(degustacion.getCerveza());
             }
         }
-        Collections.sort(cervezas, (o1, o2) -> (int) (100*(o2.getPromedio() - o1.getPromedio())) );
+        cervezas.sort((o1, o2) -> (int) (100 * (o2.getPromedio() - o1.getPromedio())));
         return cervezas;
     }
 

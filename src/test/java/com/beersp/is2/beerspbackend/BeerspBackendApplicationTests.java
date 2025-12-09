@@ -9,17 +9,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.Date;
 import java.util.Arrays;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.List;
 
+
 import com.beersp.is2.beerspbackend.controller.CervezaController;
+import com.beersp.is2.beerspbackend.controller.DegustacionController;
 import com.beersp.is2.beerspbackend.controller.LocalController;
 import com.beersp.is2.beerspbackend.controller.UsuarioController;
-import com.beersp.is2.beerspbackend.model.Cerveza;
-import com.beersp.is2.beerspbackend.model.Local;
-import com.beersp.is2.beerspbackend.model.Usuario;
+import com.beersp.is2.beerspbackend.model.*;
 import com.beersp.is2.beerspbackend.repository.CervezaRepository;
+import com.beersp.is2.beerspbackend.repository.DegustacionRepository;
 import com.beersp.is2.beerspbackend.repository.LocalRepository;
+import com.beersp.is2.beerspbackend.repository.UsuarioRepository;
 import com.beersp.is2.beerspbackend.service.CervezaService;
+import com.beersp.is2.beerspbackend.service.DegustacionService;
 import com.beersp.is2.beerspbackend.service.LocalService;
 import com.beersp.is2.beerspbackend.service.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +45,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -40,7 +56,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-/*
+
 @WebMvcTest(LocalController.class)
 @Import(LocalControllerTest.MockConfig.class)
 class LocalControllerTest {
@@ -48,6 +64,7 @@ class LocalControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Qualifier("localService")
     @Autowired
     private LocalService localService;
 
@@ -63,9 +80,10 @@ class LocalControllerTest {
         }
 
         @Bean
-        LocalService localService(LocalRepository localRepository) {
+        LocalService localService(@Qualifier("localRepository") LocalRepository localRepository) {
             return mock(LocalService.class);
         }
+
     }
 
     @BeforeEach
@@ -122,7 +140,48 @@ class LocalControllerTest {
                     .andExpect(status().isNotFound());
         }
     }
+    @Nested
+    @DisplayName("GET /locales/usuarios/{usuarioId}/recientes")
+    class ObtenerLocalesRecientesTests {
 
+        @Test
+        @DisplayName("Debe devolver locales recientes de un usuario")
+        void obtenerLocalesRecientes_ok() throws Exception {
+            Local local1 = new Local(1, "Local 1", "dir1", Date.valueOf("2025-11-16"));
+            Local local2 = new Local(2, "Local 2", "dir2", Date.valueOf("2025-11-17"));
+
+            List<Local> locales = Arrays.asList(local1, local2);
+
+            when(localService.obtenerLocalesRecientes(1)).thenReturn(locales);
+
+            mockMvc.perform(get("/locales/usuarios/1/recientes"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].id").value(1))
+                    .andExpect(jsonPath("$[1].id").value(2));
+        }
+    }
+
+
+    @Nested
+    @DisplayName("GET /locales/usuarios/{usuarioId}/ultimos")
+    class ObtenerLocalesUltimosTests {
+
+        @Test
+        @DisplayName("Debe devolver últimos locales de un usuario")
+        void obtenerLocalesUltimos_ok() throws Exception {
+            Local local1 = new Local(1, "Local 1", "dir1", Date.valueOf("2025-11-16"));
+            Local local2 = new Local(2, "Local 2", "dir2", Date.valueOf("2025-11-17"));
+
+            List<Local> locales = Arrays.asList(local1, local2);
+
+            when(localService.obtenerLocalesUltimos(1)).thenReturn(locales);
+
+            mockMvc.perform(get("/locales/usuarios/1/ultimos"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].id").value(1))
+                    .andExpect(jsonPath("$[1].id").value(2));
+        }
+    }
     // ---------------------------------------------------------------------
     @Nested
     @DisplayName("POST /locales")
@@ -209,6 +268,7 @@ class CervezaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Qualifier("cervezaService")
     @Autowired
     private CervezaService cervezaService;
 
@@ -224,7 +284,7 @@ class CervezaControllerTest {
         }
 
         @Bean
-        CervezaService cervezaService(CervezaRepository cervezaRepository) {
+        CervezaService cervezaService(@Qualifier("cervezaRepository") CervezaRepository cervezaRepository) {
             return mock(CervezaService.class);
         }
     }
@@ -244,8 +304,8 @@ class CervezaControllerTest {
         @DisplayName("Debe devolver lista de cervezas")
         void obtenerCervezas_ok() throws Exception {
             List<Cerveza> cervezas = Arrays.asList(
-                    new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16")),
-                    new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"))
+                    new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16"),1.0),
+                    new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"), 1.0)
             );
 
             when(cervezaService.obtenerCervezas()).thenReturn(cervezas);
@@ -264,7 +324,7 @@ class CervezaControllerTest {
         @Test
         @DisplayName("Debe devolver una cerveza existente")
         void obtenerCerveza_existente() throws Exception {
-            Cerveza cerveza = new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16"));
+            Cerveza cerveza = new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16"), 1.0);
 
             when(cervezaService.existeCerveza(1)).thenReturn(true);
             when(cervezaService.obtenerCerveza(1)).thenReturn(cerveza);
@@ -283,6 +343,39 @@ class CervezaControllerTest {
                     .andExpect(status().isNotFound());
         }
     }
+    @Nested
+    @DisplayName("GET /cervezas/buscar/{nombreCerveza}")
+    class BuscarCervezasTests {
+
+        @Test
+        @DisplayName("Debe devolver lista de cervezas que coinciden con el nombre")
+        void buscarCervezas_ok() throws Exception {
+            Cerveza cerveza1 = new Cerveza(1, "Cerveza IPA", "foto1", "desc1", "IPA", "proc1", "tam1", "form1", 5.0, 40, "dorado", Date.valueOf("2025-11-16"), 4.5);
+            Cerveza cerveza2 = new Cerveza(2, "Cerveza Imperial IPA", "foto2", "desc2", "IPA", "proc2", "tam2", "form2", 7.0, 60, "ambar", Date.valueOf("2025-11-17"), 4.8);
+
+            List<Cerveza> cervezas = Arrays.asList(cerveza1, cerveza2);
+
+            when(cervezaService.buscarCervezas("IPA")).thenReturn(cervezas);
+
+            mockMvc.perform(get("/cervezas/buscar/IPA"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].id").value(1))
+                    .andExpect(jsonPath("$[0].nombre").value("Cerveza IPA"))
+                    .andExpect(jsonPath("$[1].id").value(2))
+                    .andExpect(jsonPath("$[1].nombre").value("Cerveza Imperial IPA"));
+        }
+
+        @Test
+        @DisplayName("Debe devolver lista vacía si no hay coincidencias")
+        void buscarCervezas_sinResultados() throws Exception {
+            when(cervezaService.buscarCervezas("NoExiste")).thenReturn(List.of());
+
+            mockMvc.perform(get("/cervezas/buscar/NoExiste"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isArray())
+                    .andExpect(jsonPath("$.length()").value(0));
+        }
+    }
 
     // ---------------------------------------------------------------------
     @Nested
@@ -292,8 +385,8 @@ class CervezaControllerTest {
         @Test
         @DisplayName("Debe crear cerveza y retornar 201")
         void crearCerveza() throws Exception {
-            Cerveza nueva = new Cerveza(3, "Cerveza3","foto3", "descripción3","estilo3","procedencia3","tamaño3","formato3", 3.0, 3, "color3",Date.valueOf("2025-11-16"));
-            Cerveza creada = new Cerveza(10, "Cerveza10","foto10", "descripción10","estilo10","procedencia10","tamaño10","formato10", 10.0, 10, "color10", Date.valueOf("2025-11-16"));
+            Cerveza nueva = new Cerveza(3, "Cerveza3","foto3", "descripción3","estilo3","procedencia3","tamaño3","formato3", 3.0, 3, "color3",Date.valueOf("2025-11-16"), 1.0);
+            Cerveza creada = new Cerveza(10, "Cerveza10","foto10", "descripción10","estilo10","procedencia10","tamaño10","formato10", 10.0, 10, "color10", Date.valueOf("2025-11-16"), 1.0);
 
             when(cervezaService.crearCerveza(any(Cerveza.class))).thenReturn(creada);
 
@@ -313,7 +406,7 @@ class CervezaControllerTest {
         @Test
         @DisplayName("Debe actualizar y retornar 204")
         void actualizar_ok() throws Exception {
-            Cerveza mod = new Cerveza(1, "Cerveza1","foto1", "amarga en exceso","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16"));
+            Cerveza mod = new Cerveza(1, "Cerveza1","foto1", "amarga en exceso","estilo1","procedencia1","tamaño1","formato1", 1.0, 1, "color1", Date.valueOf("2025-11-16"), 1.0);
 
             when(cervezaService.existeCerveza(1)).thenReturn(true);
 
@@ -332,7 +425,7 @@ class CervezaControllerTest {
 
             mockMvc.perform(put("/cervezas/1")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(new Cerveza())))
+                            .content(objectMapper.writeValueAsString(new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"), 1.0))))
                     .andExpect(status().isNotFound());
         }
     }
@@ -590,6 +683,7 @@ class UsuarioControllerTest {
                         .andExpect(status().isNotFound());
             }
         }
+
         @Test
         @DisplayName("PUT /usuarios/{id} debe actualizar cuando username es null")
         void actualizar_sinUsername() throws Exception {
@@ -614,6 +708,7 @@ class UsuarioControllerTest {
                             .content(objectMapper.writeValueAsString(mod)))
                     .andExpect(status().isNoContent());
         }
+
         @Test
         @DisplayName("PUT /usuarios/{id} debe permitir username igual al actual")
         void actualizar_usernameEsMismo() throws Exception {
@@ -656,7 +751,285 @@ class UsuarioControllerTest {
 
 
     }
+
+    // ---------------------------------------------------------------------
+
+
 }
+
+@WebMvcTest(DegustacionController.class)
+class DegustacionControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private DegustacionService degustacionService;
+
+    @MockitoBean
+    private UsuarioService usuarioService;
+
+    @MockitoBean
+    private CervezaService cervezaService;
+
+    @MockitoBean
+    private LocalService localService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Nested
+    @DisplayName("GET /degustaciones")
+    class ObtenerDegustacionesTests {
+
+        @Test
+        @DisplayName("Debe devolver lista de degustaciones")
+        void obtenerDegustaciones_ok() throws Exception {
+            Usuario usuario = new Usuario(1, "user1", Date.valueOf("2025-11-17"), "pass1", "email1", "nombre1", "apellidos1", "foto1", "procedencia1", "introduccion1");
+            Cerveza cerveza = new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"), 1.0);
+            Local local = new Local(1, "Local 1","dir1", Date.valueOf("2025-11-16"));
+
+            Degustacion d1 = new Degustacion(1, usuario, cerveza, local, 4, "Pais1", Date.valueOf("2025-11-17"));
+            Degustacion d2 = new Degustacion(2, usuario, cerveza, local, 5, "Pais2", Date.valueOf("2025-11-18"));
+
+            List<Degustacion> degustaciones = Arrays.asList(d1, d2);
+
+            when(degustacionService.obtenerDegustaciones()).thenReturn(degustaciones);
+
+            mockMvc.perform(get("/degustaciones"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].id").value(1))
+                    .andExpect(jsonPath("$[1].id").value(2));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /degustaciones/usuarios/{usuarioId}/ultimos")
+    class ObtenerDegustacionesUltimosTests {
+
+        @Test
+        @DisplayName("Debe devolver últimas degustaciones de un usuario")
+        void obtenerDegustacionesUltimos_ok() throws Exception {
+            Usuario usuario = new Usuario(1, "user1", Date.valueOf("2025-11-17"), "pass1", "email1", "nombre1", "apellidos1", "foto1", "procedencia1", "introduccion1");
+            Cerveza cerveza = new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"), 1.0);
+            Local local = new Local(1, "Local 1","dir1", Date.valueOf("2025-11-16"));
+
+            Degustacion d1 = new Degustacion(1, usuario, cerveza, local, 4, "Pais1", Date.valueOf("2025-11-17"));
+
+            List<Degustacion> degustaciones = List.of(d1);
+
+            when(degustacionService.obtenerDegustacionesUltimos(1)).thenReturn(degustaciones);
+
+            mockMvc.perform(get("/degustaciones/usuarios/1/ultimos"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].id").value(1));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /degustaciones/{id}")
+    class ObtenerDegustacionPorIdTests {
+
+        @Test
+        @DisplayName("Debe devolver degustación existente")
+        void obtenerDegustacion_ok() throws Exception {
+            Usuario usuario = new Usuario(1, "user1", Date.valueOf("2025-11-17"), "pass1", "email1", "nombre1", "apellidos1", "foto1", "procedencia1", "introduccion1");
+            Cerveza cerveza = new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"), 1.0);
+            Local local = new Local(1, "Local 1","dir1", Date.valueOf("2025-11-16"));
+
+            Degustacion d = new Degustacion(1, usuario, cerveza, local, 4, "Pais1", Date.valueOf("2025-11-17"));
+
+            when(degustacionService.existeDegustacion(1)).thenReturn(true);
+            when(degustacionService.obtenerDegustacion(1)).thenReturn(d);
+
+            mockMvc.perform(get("/degustaciones/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.calificacion").value(4));
+        }
+
+        @Test
+        @DisplayName("Debe devolver 404 si no existe")
+        void obtenerDegustacion_noExiste() throws Exception {
+            when(degustacionService.existeDegustacion(1)).thenReturn(false);
+
+            mockMvc.perform(get("/degustaciones/1"))
+                    .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /degustaciones")
+    class CrearDegustacionTests {
+
+        @Test
+        @DisplayName("Debe crear degustación y retornar 201")
+        void crearDegustacion_ok() throws Exception {
+            Usuario usuario = new Usuario(1, "user1", Date.valueOf("2025-11-17"), "pass1", "email1", "nombre1", "apellidos1", "foto1", "procedencia1", "introduccion1");
+            Cerveza cerveza = new Cerveza(1, "Cerveza1","foto1", "descripción1","estilo1","procedencia1","tamaño1","formato1", 2.0, 2, "color1", Date.valueOf("2025-11-16"), 1.0);
+            Local local = new Local(1, "Local 1","dir1", Date.valueOf("2025-11-16"));
+
+            DegustacionAux nuevaDegustacion = new DegustacionAux();
+            nuevaDegustacion.setUsuario(1);
+            nuevaDegustacion.setCerveza(1);
+            nuevaDegustacion.setLocal(1);
+            nuevaDegustacion.setCalificacion(4);
+            nuevaDegustacion.setPais("Pais1");
+            nuevaDegustacion.setFechaAlta(Date.valueOf("2025-11-17"));
+
+            Degustacion degustacionCreada = new Degustacion(10, usuario, cerveza, local, 4, "Pais1", Date.valueOf("2025-11-17"));
+
+            when(usuarioService.obtenerUsuario(1)).thenReturn(usuario);
+            when(cervezaService.obtenerCerveza(1)).thenReturn(cerveza);
+            when(localService.obtenerLocal(1)).thenReturn(local);
+            when(degustacionService.crearDegustacion(any(Degustacion.class))).thenReturn(degustacionCreada);
+
+            mockMvc.perform(post("/degustaciones")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(nuevaDegustacion)))
+                    .andExpect(status().isCreated())
+                    .andExpect(header().string("Location", "http://localhost/degustaciones/10"));
+
+            verify(degustacionService).actualizarPromedioCerveza(1);
+        }
+
+        @Test
+        @DisplayName("Debe devolver 404 si usuario no existe")
+        void crearDegustacion_usuarioNoExiste() throws Exception {
+            DegustacionAux nuevaDegustacion = new DegustacionAux();
+            nuevaDegustacion.setUsuario(999);
+            nuevaDegustacion.setCerveza(1);
+            nuevaDegustacion.setLocal(1);
+            nuevaDegustacion.setCalificacion(4);
+            nuevaDegustacion.setPais("Pais1");
+            nuevaDegustacion.setFechaAlta(Date.valueOf("2025-11-17"));
+
+            when(usuarioService.obtenerUsuario(999)).thenReturn(null);
+
+            mockMvc.perform(post("/degustaciones")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(nuevaDegustacion)))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Debe devolver 404 si cerveza no existe")
+        void crearDegustacion_cervezaNoExiste() throws Exception {
+            Usuario usuario = new Usuario(1, "user1", Date.valueOf("2025-11-17"), "pass1", "email1", "nombre1", "apellidos1", "foto1", "procedencia1", "introduccion1");
+
+            DegustacionAux nuevaDegustacion = new DegustacionAux();
+            nuevaDegustacion.setUsuario(1);
+            nuevaDegustacion.setCerveza(999);
+            nuevaDegustacion.setLocal(1);
+            nuevaDegustacion.setCalificacion(4);
+            nuevaDegustacion.setPais("Pais1");
+            nuevaDegustacion.setFechaAlta(Date.valueOf("2025-11-17"));
+
+            when(usuarioService.obtenerUsuario(1)).thenReturn(usuario);
+            when(cervezaService.obtenerCerveza(999)).thenReturn(null);
+
+            mockMvc.perform(post("/degustaciones")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(nuevaDegustacion)))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Debe crear degustación con local null")
+        void crearDegustacion_localNull() throws Exception {
+            Usuario usuario = new Usuario(1, "user1", Date.valueOf("2025-11-17"), "pass1", "email1", "nombre1", "apellidos1", "foto1", "procedencia1", "introduccion1");
+            Cerveza cerveza = new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"), 1.0);
+
+            DegustacionAux nuevaDegustacion = new DegustacionAux();
+            nuevaDegustacion.setUsuario(1);
+            nuevaDegustacion.setCerveza(1);
+            nuevaDegustacion.setLocal(999);
+            nuevaDegustacion.setCalificacion(4);
+            nuevaDegustacion.setPais("Pais1");
+            nuevaDegustacion.setFechaAlta(Date.valueOf("2025-11-17"));
+
+            Degustacion degustacionCreada = new Degustacion(10, usuario, cerveza, null, 4, "Pais1", Date.valueOf("2025-11-17"));
+
+            when(usuarioService.obtenerUsuario(1)).thenReturn(usuario);
+            when(cervezaService.obtenerCerveza(1)).thenReturn(cerveza);
+            when(localService.obtenerLocal(999)).thenReturn(null);
+            when(degustacionService.crearDegustacion(any(Degustacion.class))).thenReturn(degustacionCreada);
+
+            mockMvc.perform(post("/degustaciones")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(nuevaDegustacion)))
+                    .andExpect(status().isCreated())
+                    .andExpect(header().string("Location", "http://localhost/degustaciones/10"));
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT /degustaciones/{id}")
+    class ActualizarDegustacionTests {
+
+        @Test
+        @DisplayName("Debe actualizar y retornar 204")
+        void actualizar_ok() throws Exception {
+            Usuario usuario = new Usuario(1, "user1", Date.valueOf("2025-11-17"), "pass1", "email1", "nombre1", "apellidos1", "foto1", "procedencia1", "introduccion1");
+            Cerveza cerveza = new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"), 1.0);
+            Local local = new Local(1, "Local 1","dir1", Date.valueOf("2025-11-16"));
+
+            Degustacion degustacionMod = new Degustacion(1, usuario, cerveza, local, 5, "Pais2", Date.valueOf("2025-11-18"));
+
+            when(degustacionService.existeDegustacion(1)).thenReturn(true);
+
+            mockMvc.perform(put("/degustaciones/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(degustacionMod)))
+                    .andExpect(status().isNoContent());
+
+            verify(degustacionService).actualizarDegustacion(eq(1), any(Degustacion.class));
+        }
+
+        @Test
+        @DisplayName("Debe devolver 404 si id no existe")
+        void actualizar_noExiste() throws Exception {
+            Usuario usuario = new Usuario(1, "user1", Date.valueOf("2025-11-17"), "pass1", "email1", "nombre1", "apellidos1", "foto1", "procedencia1", "introduccion1");
+            Cerveza cerveza = new Cerveza(2, "Cerveza2","foto2", "descripción2","estilo2","procedencia2","tamaño2","formato2", 2.0, 2, "color2", Date.valueOf("2025-11-16"), 1.0);
+            Local local = new Local(1, "Local 1","dir1", Date.valueOf("2025-11-16"));
+
+            Degustacion degustacionMod = new Degustacion(1, usuario, cerveza, local, 5, "Pais2", Date.valueOf("2025-11-18"));
+
+            when(degustacionService.existeDegustacion(1)).thenReturn(false);
+
+            mockMvc.perform(put("/degustaciones/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(degustacionMod)))
+                    .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE /degustaciones/{id}")
+    class EliminarDegustacionTests {
+
+        @Test
+        @DisplayName("Debe eliminar y retornar 204")
+        void eliminar_ok() throws Exception {
+            when(degustacionService.existeDegustacion(1)).thenReturn(true);
+
+            mockMvc.perform(delete("/degustaciones/1"))
+                    .andExpect(status().isNoContent());
+
+            verify(degustacionService).eliminarDegustacion(1);
+        }
+
+        @Test
+        @DisplayName("Debe devolver 404 si no existe")
+        void eliminar_noExiste() throws Exception {
+            when(degustacionService.existeDegustacion(1)).thenReturn(false);
+
+            mockMvc.perform(delete("/degustaciones/1"))
+                    .andExpect(status().isNotFound());
+        }
+    }
+}
+
 
 @SpringBootTest
 class BeerspBackendApplicationTest {
@@ -670,4 +1043,3 @@ class BeerspBackendApplicationTest {
         BeerspBackendApplication.main(new String[] {});
     }
 }
-*/

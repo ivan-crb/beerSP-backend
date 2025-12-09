@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -37,6 +36,7 @@ public class CervezaService {
                 cervezas.add(degustacion.getCerveza());
             }
         }
+        Collections.sort(cervezas, (o1, o2) -> (int) (100*(o2.getPromedio() - o1.getPromedio())) );
         return cervezas;
     }
 
